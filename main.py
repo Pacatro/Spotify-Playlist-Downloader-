@@ -46,9 +46,20 @@ class MainWindow:
         url_entry = Entry(root, font=("System", 10), bg = "White", fg = "#161616")
         url_entry.place(x = 135, y = 450, width = 600, height = 22)
         
-        download_button = Button(root, text = "Download", font = ("System", 18), fg = "White", bg = "#1F1F1F", bd = 5, cursor = "hand2", command = lambda: [download_playlist(c_id_entry.get(), c_secret_entry.get(), url_entry.get(), username_entry.get())])
+        download_button = Button(root, text = "Download", font = ("System", 18), fg = "White", bg = "#1F1F1F", bd = 5, cursor = "hand2", command = lambda: [download_playlist(c_id_entry.get(), c_secret_entry.get(), url_entry.get(), username_entry.get()), root.destroy()])
         download_button.place(x = 350, y = 530)
-
+        
+class DownloadWindow:
+    def __init__(self, root):
+        root.geometry("300x100")
+        root.title("Spotify Playlist Downloader")
+        root.config(bg = "#1F1F1F")
+        root.resizable(0, 0)
+        root.iconbitmap("assets\Spotify_downloader_logo.ico")
+        
+        download_title = Label(root, text = "Downloading songs...", bg = "#1F1F1F", font = ("System", 19), fg = "White")
+        download_title.pack(pady = 30)
+        
 
 #Get directory to save files
 def get_dir():
@@ -92,6 +103,8 @@ def download_playlist(c_id, c_secret, pl_id, user):
     
     direc = get_dir()
     
+    init_window(DownloadWindow)
+    
     sp = spotipy.Spotify()
     client_credentials_manager = SpotifyClientCredentials(client_id = c_id, client_secret = c_secret)
     sp = spotipy.Spotify(client_credentials_manager = client_credentials_manager)
@@ -117,13 +130,17 @@ def download_playlist(c_id, c_secret, pl_id, user):
     
     
     download_yt_mp3(urls, direc)  
+
+
+def init_window(class_window):
+    app = tk.Tk()
+    window = class_window(app)
+
+    app.mainloop()
     
 
 def main():
-    app = tk.Tk()
-    window = MainWindow(app)
-    
-    app.mainloop()
+    init_window(MainWindow)
 
 
 if __name__ == '__main__':
